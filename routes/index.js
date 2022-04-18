@@ -8,5 +8,6 @@ router.get('/', function (req, res, next) {
 });
 
 router.get('/words/', queries.get_all_words);
+router.get('/words/:id', queries.get_individual_word);
 
 module.exports = router;

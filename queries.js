@@ -15,3 +15,24 @@ exports.get_all_words = (req, res) => {
         res.status(200).json(results.rows);
     });
 };
+
+exports.get_individual_word = (req, res) => {
+    const id = req.params.id;
+
+    pool.query(
+        'SELECT * FROM words WHERE word = $1',
+        [id],
+        (error, results) => {
+            if (error) {
+                throw error;
+            }
+            if (results.rows.length > 0) {
+                res.status(200).json(results.rows);
+            } else {
+                res.status(404).json({
+                    message: 'That word is not in the database.',
+                });
+            }
+        }
+    );
+};
