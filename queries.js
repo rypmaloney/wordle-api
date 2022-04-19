@@ -36,3 +36,18 @@ exports.get_individual_word = (req, res) => {
         }
     );
 };
+
+exports.add_word = (req, res) => {
+    const { word, definition, length, pos } = req.body;
+
+    pool.query(
+        'INSERT INTO words (word, definition, length, pos) VALUES ($1, $2, $3, $4)',
+        [word, definition, length, pos],
+        (error, results) => {
+            if (error) {
+                throw error;
+            }
+            res.status(201).send(`Word added`);
+        }
+    );
+};
