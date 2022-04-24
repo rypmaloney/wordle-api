@@ -1,6 +1,6 @@
 const axios = require('axios');
 
-const fetchWord = async (guess) => {
+exports.fetchWord = async (guess) => {
     let config = {
         headers: {
             Accept: 'application/json',
@@ -10,19 +10,12 @@ const fetchWord = async (guess) => {
     };
 
     try {
-        return await axios.get(
+        let response = await axios.get(
             `https://wordsapiv1.p.rapidapi.com/words/${guess}/definitions`,
             config
         );
+        return response.data;
     } catch (error) {
         console.error(error);
-    }
-};
-
-const insert_word_db = async () => {
-    const word = await fetchWord();
-
-    if (word) {
-        console.log(`${word.word} inserted into DB`);
     }
 };
