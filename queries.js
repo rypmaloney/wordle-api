@@ -1,13 +1,11 @@
-const { json } = require('express');
-
 const Pool = require('pg').Pool;
 const fetchWord = require('./fetchWord').fetchWord;
 const pool = new Pool({
     user: process.env.USER,
-    host: 'localhost',
+    host: process.env.HOST,
     database: process.env.DB,
     password: process.env.PASSWORD,
-    port: 5432,
+    port: '5432',
 });
 
 exports.get_all_words = (req, res) => {
@@ -34,29 +32,29 @@ exports.get_individual_word = async (req, res) => {
                 res.status(200).json(results.rows);
             } else {
                 //word is not in database, query API
-                const dictionary_response = await fetchWord(id);
+                const dictionaryResponse = await fetchWord(id);
 
-                if (dictionary_response) {
+                if (dictionaryResponse) {
                     //its a real word, add to DB and send response
                     pool.query(
                         'INSERT INTO words (word, definition, length, pos) VALUES ($1, $2, $3, $4)',
                         [
-                            dictionary_response.word,
-                            dictionary_response.definitions[0].definition,
-                            dictionary_response.word.length,
-                            dictionary_response.definitions[0].partOfSpeech,
+                            id,
+                            dictionaryResponse.definitions[0].definition,
+                            dictionaryResponse.word.length,
+                            dictionaryResponse.definitions[0].partOfSpeech,
                         ],
                         (error, results) => {
                             if (error) {
                                 throw error;
                             }
-                            res.status(201).json(dictionary_response);
+                            res.status(201).json(dictionaryResponse);
                         }
                     );
                 } else {
                     //Not a word in the API
                     console.log('not a word');
-                    res.json({ message: 'not a word' });
+                    res.status(404).json({ message: `${id} is not a word` });
                 }
             }
         }
@@ -77,20 +75,3 @@ exports.add_word = (req, res) => {
         }
     );
 };
-
-exports.check_word = async (req, res) => {
-    const word = req.params.id;
-
-    const dictionary_response = await fetchWord(word);
-
-    console.log(dictionary_response);
-
-    if (dictionary_response) {
-        res.json(dictionary_response);
-    } else {
-        console.log('not a word');
-        res.json({ message: 'not a word' });
-    }
-};
-
-const add_word_to_db = async (word) => {};

@@ -9,7 +9,7 @@ router.get('/', function (req, res, next) {
 
 router.get('/words/', queries.get_all_words);
 
-// router.post('/words/', queries.checkWord);
+router.post('/words/:id', queries.add_word);
 
 router.get('/words/:id', queries.get_individual_word);
 
