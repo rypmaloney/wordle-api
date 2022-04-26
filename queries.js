@@ -1,12 +1,6 @@
 const Pool = require('pg').Pool;
 const fetchWord = require('./fetchWord').fetchWord;
-const pool = new Pool({
-    user: process.env.USER,
-    host: process.env.HOST,
-    database: process.env.DB,
-    password: process.env.PASSWORD,
-    port: '5432',
-});
+const { pool } = require('./config');
 
 exports.get_all_words = (req, res) => {
     pool.query('SELECT * FROM words ORDER BY id ASC', (error, results) => {
