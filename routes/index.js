@@ -14,7 +14,7 @@ router.post('/words/:id', queries.add_word);
 router.get('/words/:id', queries.get_individual_word);
 
 router.get('/test/', (req, res) => {
-    res.json({ message: 'API operational' });
+    res.json({ message: 'API operational. Retesting...' });
 });
 
 module.exports = router;
