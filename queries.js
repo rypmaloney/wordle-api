@@ -1,4 +1,3 @@
-const Pool = require('pg').Pool;
 const fetchWord = require('./fetchWord').fetchWord;
 const { pool } = require('./config');
 
