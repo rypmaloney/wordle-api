@@ -7,7 +7,7 @@
     "devstart": "nodemon node ./bin/www"
   },
   "engines": {
-    "node": "16.14.0heroku create"
+    "node": "16.14.0"
   },
   "dependencies": {
     "axios": "^0.26.1",
