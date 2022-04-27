@@ -1,5 +1,8 @@
 .DS_store
 .env
 node_modules/
-
+lists/
 .npm
+wordsWithDefs.json
+goodWords.json
+
