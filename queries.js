@@ -29,19 +29,27 @@ exports.get_individual_word = async (req, res) => {
 
                 if (dictionaryResponse) {
                     //its a real word, add to DB and send response
+                    let definition = 'ERROR: No definition in DB';
+                    let pos = false;
+                    if (dictionaryResponse.definitions.length > 0) {
+                        definition =
+                            dictionaryResponse.definitions[0].definition;
+                        pos = dictionaryResponse.definitions[0].partOfSpeech;
+                    }
+
                     pool.query(
                         'INSERT INTO words (word, definition, length, pos) VALUES ($1, $2, $3, $4)',
-                        [
-                            id,
-                            dictionaryResponse.definitions[0].definition,
-                            dictionaryResponse.word.length,
-                            dictionaryResponse.definitions[0].partOfSpeech,
-                        ],
+                        [id, definition, dictionaryResponse.word.length, pos],
                         (error, results) => {
                             if (error) {
                                 throw error;
                             }
-                            res.status(201).json(dictionaryResponse);
+                            res.status(201).json({
+                                word: id,
+                                definition: definition,
+                                length: id.length,
+                                pos: pos,
+                            });
                         }
                     );
                 } else {
@@ -68,3 +76,19 @@ exports.add_word = (req, res) => {
         }
     );
 };
+
+exports.get_list = (req, res) => {
+    const id = req.params.id;
+    pool.query(
+        'SELECT * FROM words WHERE LENGTH(word) = $1',
+        [id],
+        (error, results) => {
+            if (error) {
+                throw error;
+            }
+            res.status(200).json(results.rows);
+        }
+    );
+};
+
+exports.get_six_letter_words = (req, res) => {};

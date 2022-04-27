@@ -6,6 +6,7 @@ const queries = require('../queries');
 router.get('/', function (req, res, next) {
     res.send({ title: 'Wordle API' });
 });
+router.get('/list/:id', queries.get_list);
 
 router.get('/words/', queries.get_all_words);
 
