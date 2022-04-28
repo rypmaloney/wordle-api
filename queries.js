@@ -21,6 +21,22 @@ exports.get_individual_word = async (req, res) => {
                 throw error;
             }
             if (results.rows.length > 0) {
+                //the word is in the db
+                //increment referenced count
+                const referencedCount = results.rows[0].referencedcount;
+                let incrementedCount = referencedCount + 1;
+                const word = req.params.id;
+
+                pool.query(
+                    'UPDATE words SET referencedCount = $1 WHERE word = $2',
+                    [incrementedCount, word],
+                    (error, results) => {
+                        if (error) {
+                            throw error;
+                        }
+                    }
+                );
+
                 //word is in database, send info
                 res.status(200).json(results.rows);
             } else {
@@ -37,10 +53,11 @@ exports.get_individual_word = async (req, res) => {
                                 .definition;
                         pos = dictionaryResponse[0].meanings[0].partOfSpeech;
                     }
+                    let rc = 0;
 
                     pool.query(
-                        'INSERT INTO words (word, definition, length, pos) VALUES ($1, $2, $3, $4)',
-                        [id, definition, id.length, pos],
+                        'INSERT INTO words (word, definition, length, pos, referencedCount) VALUES ($1, $2, $3, $4, $5)',
+                        [id, definition, id.length, pos, rc],
                         (error, results) => {
                             if (error) {
                                 throw error;
@@ -91,5 +108,3 @@ exports.get_list = (req, res) => {
         }
     );
 };
-
-exports.get_six_letter_words = (req, res) => {};
