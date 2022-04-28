@@ -6,18 +6,36 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var helmet = require('helmet');
 const cors = require('cors');
-
+const rateLimit = require('express-rate-limit');
+const compression = require('compression');
 var indexRouter = require('./routes/index');
 
 var app = express();
 
+app.use(compression());
 app.use(helmet());
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(cors());
+
+//set up cors to be available only from wordle-unlimited
+const isProduction = process.env.NODE_ENV === 'production';
+const origin = {
+    origin: isProduction
+        ? 'https://rypmaloney.github.io/wordle-unlimited/'
+        : '*',
+};
+app.use(cors(origin));
+
+//limit to 10 requests per minute
+const limiter = rateLimit({
+    windowMs: 1 * 60 * 1000, // 1 minute
+    max: 10, // 10 requests,
+});
+
+app.use(limiter);
 
 app.use('/', indexRouter);
 
