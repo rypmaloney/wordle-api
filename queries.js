@@ -31,15 +31,21 @@ exports.get_individual_word = async (req, res) => {
                     //its a real word, add to DB and send response
                     let definition = 'ERROR: No definition in DB';
                     let pos = false;
-                    if (dictionaryResponse.definitions.length > 0) {
+                    if (dictionaryResponse[0].meanings) {
                         definition =
-                            dictionaryResponse.definitions[0].definition;
-                        pos = dictionaryResponse.definitions[0].partOfSpeech;
+                            dictionaryResponse[0].meanings[0].definitions[0]
+                                .definition;
+                        pos = dictionaryResponse[0].meanings[0].partOfSpeech;
                     }
 
                     pool.query(
                         'INSERT INTO words (word, definition, length, pos) VALUES ($1, $2, $3, $4)',
-                        [id, definition, dictionaryResponse.word.length, pos],
+                        [
+                            id,
+                            definition,
+                            dictionaryResponse[0].word.length,
+                            pos,
+                        ],
                         (error, results) => {
                             if (error) {
                                 throw error;

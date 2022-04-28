@@ -11,7 +11,7 @@ exports.fetchWord = async (guess) => {
 
     try {
         let response = await axios.get(
-            `https://wordsapiv1.p.rapidapi.com/words/${guess}/definitions`,
+            `https://api.dictionaryapi.dev/api/v2/entries/en/${guess}/`,
             config
         );
         return response.data;
