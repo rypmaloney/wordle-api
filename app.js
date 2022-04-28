@@ -23,9 +23,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 //set up cors to be available only from wordle-unlimited
 const isProduction = process.env.NODE_ENV === 'production';
 const origin = {
-    origin: isProduction
-        ? 'https://rypmaloney.github.io/wordle-unlimited/'
-        : '*',
+    origin: isProduction ? 'https://rypmaloney.github.io/' : '*',
 };
 app.use(cors(origin));
 
