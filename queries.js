@@ -40,12 +40,7 @@ exports.get_individual_word = async (req, res) => {
 
                     pool.query(
                         'INSERT INTO words (word, definition, length, pos) VALUES ($1, $2, $3, $4)',
-                        [
-                            id,
-                            definition,
-                            dictionaryResponse[0].word.length,
-                            pos,
-                        ],
+                        [id, definition, pos],
                         (error, results) => {
                             if (error) {
                                 throw error;
