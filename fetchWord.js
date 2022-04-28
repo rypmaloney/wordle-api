@@ -4,8 +4,6 @@ exports.fetchWord = async (guess) => {
     let config = {
         headers: {
             Accept: 'application/json',
-            'x-rapidapi-host': process.env.WORDS_HOST,
-            'x-rapidapi-key': process.env.KEY,
         },
     };
 
