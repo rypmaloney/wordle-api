@@ -134,7 +134,7 @@ exports.post_game = (req, res) => {
         game_id,
     } = req.body;
     let date = new Date();
-    let ip = req.ip;
+    let ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
 
     pool.query(
         'INSERT INTO games (date, ip, guess_one, guess_two, guess_three, guess_four, guess_five, guess_six, game_word, result, guess_number, game_id) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12 )',
