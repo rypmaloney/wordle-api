@@ -18,4 +18,6 @@ router.get('/test/', (req, res) => {
     res.json({ message: 'API operational. Retesting...' });
 });
 
+router.post('/game/', queries.post_game);
+
 module.exports = router;

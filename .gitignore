@@ -7,3 +7,4 @@ wordsWithDefs.json
 goodWords.json
 
 populatePGDB.js
+create.sql
