@@ -14,7 +14,9 @@ exports.check_individual_word = async (req, res) => {
     const id = req.params.id;
 
     // ADD TO GUESSES
+
     const { game_word, guess_number, game_id } = req.body;
+    console.log(game_word, game_id);
     let date = new Date();
     let ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
     pool.query(
