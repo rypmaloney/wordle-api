@@ -10,9 +10,24 @@ exports.get_all_words = (req, res) => {
     });
 };
 
-exports.get_individual_word = async (req, res) => {
+exports.check_individual_word = async (req, res) => {
     const id = req.params.id;
 
+    // ADD TO GUESSES
+    const { game_word, guess_number, game_id } = req.body;
+    let date = new Date();
+    let ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+    pool.query(
+        'INSERT INTO guesses (guess, game_word, guess_number, game_id, ip, date) VALUES ($1, $2, $3, $4, $5, $6)',
+        [id, game_word, guess_number, game_id, ip, date],
+        (error, results) => {
+            if (error) {
+                throw error;
+            }
+        }
+    );
+
+    //CHECK WORD and ADD TO WORDS
     pool.query(
         'SELECT * FROM words WHERE word = $1',
         [id],
@@ -50,11 +65,13 @@ exports.get_individual_word = async (req, res) => {
                 //word is not in database or is not a word, query API
                 const dictionaryResponse = await fetchWord(id);
 
+                //set up information to add to DB - guesses and words
                 let definition =
                     'ERROR: No definition in DB. This is likely not a word.';
                 let pos = false;
                 let isWord = false;
-                let rc = 0;
+                let referenced_count = 0;
+
                 if (dictionaryResponse) {
                     //its a real word, add to DB
                     isWord = true;
@@ -63,10 +80,10 @@ exports.get_individual_word = async (req, res) => {
                             .definition;
                     pos = dictionaryResponse[0].meanings[0].partOfSpeech;
                 }
-
+                //insert into words
                 pool.query(
                     'INSERT INTO words (word, definition, length, pos, referencedCount, isWord) VALUES ($1, $2, $3, $4, $5, $6)',
-                    [id, definition, id.length, pos, rc, isWord],
+                    [id, definition, id.length, pos, referenced_count, isWord],
                     (error, results) => {
                         if (error) {
                             throw error;
